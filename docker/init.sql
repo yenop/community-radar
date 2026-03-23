@@ -57,3 +57,6 @@ INSERT INTO sources (type, name, url) VALUES
   ('reddit','r/smallbusiness','https://www.reddit.com/r/smallbusiness'),
   ('reddit','r/startups','https://www.reddit.com/r/startups'),
   ('reddit','r/artificial','https://www.reddit.com/r/artificial');
+
+-- Utilisateur par défaut
+INSERT IGNORE INTO users (id, email) VALUES (1, 'admin@communityradar.local');
