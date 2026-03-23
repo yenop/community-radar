@@ -1,0 +1,63 @@
+version: "3.9"
+services:
+  db:
+    image: mariadb:11
+    container_name: community_radar_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_radar_2026
+      MYSQL_DATABASE: community_radar
+      MYSQL_USER: community_radar
+      MYSQL_PASSWORD: radar_pass_2026
+    volumes:
+      - db_data:/var/lib/mysql
+      - /home/node/.openclaw/workspace/community-radar/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks: [radar_net]
+    healthcheck:
+      test: ["CMD","healthcheck.sh","--su-mysql","--connect","--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: /home/node/.openclaw/workspace/community-radar/backend
+      dockerfile: Dockerfile
+    container_name: community_radar_backend
+    restart: unless-stopped
+    env_file: /home/node/.openclaw/workspace/community-radar/backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [radar_net]
+
+  worker:
+    build:
+      context: /home/node/.openclaw/workspace/community-radar/backend
+      dockerfile: Dockerfile.worker
+    container_name: community_radar_worker
+    restart: unless-stopped
+    env_file: /home/node/.openclaw/workspace/community-radar/backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [radar_net]
+
+  nginx:
+    build:
+      context: /home/node/.openclaw/workspace/community-radar/docker
+      dockerfile: Dockerfile.nginx
+    container_name: community_radar_nginx
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - /home/node/.openclaw/workspace/community-radar/frontend/dist/frontend/browser:/var/www/app:ro
+    depends_on: [backend]
+    networks: [radar_net]
+
+networks:
+  radar_net:
+
+volumes:
+  db_data:
