@@ -5,8 +5,8 @@ class Settings(BaseSettings):
     REDDIT_CLIENT_SECRET: str = ""
     REDDIT_USER_AGENT: str = "CommunityRadar/1.0"
     ANTHROPIC_API_KEY: str = ""
-    TELEGRAM_BOT_TOKEN: str = ""
-    TELEGRAM_CHAT_ID: str = ""
+    DISCORD_WEBHOOK_URL: str = ""
+    # plus utilisé
     MARIADB_HOST: str = "db"
     MARIADB_USER: str = "community_radar"
     MARIADB_PASSWORD: str = "radar_pass_2026"

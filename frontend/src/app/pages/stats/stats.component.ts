@@ -44,13 +44,13 @@ import { ApiService } from "../../core/services/api.service";
     </div>
   </div>
   <div class="test-section">
-    <h3>Test notification Telegram</h3>
+    <h3>Test notification Discord</h3>
     <div class="test-row">
       <button (click)="testTelegram()" class="btn-test" [disabled]="testing">
-        {{testing ? "Envoi…" : "🔔 Envoyer un test"}}
+        {{testing ? "Envoi…" : "🔔 Test Discord"}}
       </button>
       <span class="test-result" *ngIf="testResult !== null">
-        {{testResult ? "✅ Envoyé !" : "❌ Vérifiez TELEGRAM_BOT_TOKEN"}}
+        {{testResult ? "✅ Envoyé !" : "❌ Vérifiez DISCORD_WEBHOOK_URL dans .env"}}
       </span>
     </div>
   </div>

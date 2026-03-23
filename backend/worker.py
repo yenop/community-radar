@@ -8,7 +8,7 @@ from datetime import datetime
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.models.models import Source, Criteria, PostDetected, Notification
-from app.services.telegram import send_telegram
+from app.services.discord import send_discord
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s — %(message)s")
 logger = logging.getLogger("worker")
@@ -126,12 +126,18 @@ async def run_scan():
                         db.commit()
                         db.refresh(new_post)
 
-                        if settings.TELEGRAM_CHAT_ID:
-                            msg = format_notification(post, criteria, score)
-                            sent = await send_telegram(settings.TELEGRAM_CHAT_ID, msg)
+                        if settings.DISCORD_WEBHOOK_URL:
+                            sent = await send_discord(
+                                settings.DISCORD_WEBHOOK_URL,
+                                title=post["title"],
+                                description=post["content"][:300] if post["content"] else "",
+                                url=post["url"],
+                                score=score,
+                                criteria_label=criteria.label
+                            )
                             if sent:
                                 new_post.notified = 1
-                                notif = Notification(user_id=criteria.user_id, post_id=new_post.id, channel="telegram")
+                                notif = Notification(user_id=criteria.user_id, post_id=new_post.id, channel="discord")
                                 db.add(notif)
                                 db.commit()
 
