@@ -52,7 +52,7 @@ services:
     ports:
       - "8090:80"
     volumes:
-      - /home/node/.openclaw/workspace/community-radar/frontend/dist/frontend/browser:/var/www/app:ro
+      - /home/ubuntu/.openclaw/workspace/community-radar/frontend/dist/frontend/browser:/var/www/app:ro
     depends_on: [backend]
     networks: [radar_net]
 
